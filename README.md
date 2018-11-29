@@ -69,6 +69,7 @@ As a final challenge, make it so that only users who log into the site with thei
 - Jquery
 - Bootstrap
 - Moment
+- Firebase
 
 ```
 ### Commets:
