@@ -1,74 +1,119 @@
-  // Initialize Firebase
 
-  // Create a variable to reference the database
+var config = {
+  apiKey: "AIzaSyDNL2E-iJtEuEDfZ2biq6_EnYpl7kC3Ces",
+  authDomain: "golden-eye-train.firebaseapp.com",
+  databaseURL: "https://golden-eye-train.firebaseio.com",
+  projectId: "golden-eye-train",
+  storageBucket: "",
+  messagingSenderId: "807123439286"
+};
+firebase.initializeApp(config);
 
-  //Run Time  
+var database = firebase.database();
+setInterval(function (startTime) {
+  $("#timer").html(moment().format('hh:mm a'))
+}, 1000);
 
-  // Capture Button Click
+$("#add-train").on("click", function () {
+  event.preventDefault();
 
-  // Don't refresh the page!
+  var train = $("#trainname-input").val().trim();
+  var destination = $("#destination-input").val().trim();
+  var frequency = $("#frequency-input").val().trim();
+  var firstTime = $("#firsttime-input").val().trim();
 
-  // Code in the logic for storing and retrieving the most recent train information
+  var trainInfo = {
+    formtrain: train,
+    formdestination: destination,
+    formfrequency: frequency,
+    formfirsttime: firstTime,
+    dateAdded: firebase.database.ServerValue.TIMESTAMP
+  };
 
-  // Don't forget to provide initial data to your Firebase database. Set replaces old data
+  $("#trainname-input").val("");
+  $("#destination-input").val("");
+  $("#frequency-input").val("");
+  $("#firsttime-input").val("");
 
-  // Alert
-  
-  // alert("Train was successfully added");
+});
+var train;
+var frequency;
+var destination;
+var firstTime
 
-  // Clears all of the text-boxes
+database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+  var train = childSnapshot.val().formtrain;
+  var destination = childSnapshot.val().formdestination;
+  var frequency = childSnapshot.val().formfrequency;
+  var firstTime = childSnapshot.val().formfirsttime;
 
-  // Firebase watcher + initial loader 
+  var firstTimeConverted = moment(firstTime, "hh:mm").subtract(1, "years");
+  console.log(firstTimeConverted);
 
-  // determine current time
+  var currentTime = moment();
+  console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm a"));
 
-  // get timer function
+  $("#timer").text(currentTime.format("hh:mm a"));
 
-  // Difference between times
+  var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+  console.log("DIFFERENCE IN TIME: " + diffTime);
 
-  // Time apart (remainder)
 
-  //determine Minutes Away
+  var tRemainder = diffTime % frequency;
+  console.log("Remainder: " + tRemainder);
 
-  //determine Next Train Arrival
+  var minutesAway = frequency - tRemainder;
+  console.log("MINUTES TILL TRAIN: " + minutesAway);
 
-  //want to push to table to add new train 
-  
-  //add new table row
-  
-  //add new train information into row
-  
-  //add each train's data into the table row
+  var nextArrival = moment().add(minutesAway, "minutes").format("hh:mm a");
+  console.log("ARRIVAL TIME: " + moment(nextArrival).format("hh:mm a"));
 
-  //add back updated information
+  $("#train-table > tbody").append("<tr><td>" + '<i class="fa fa-trash" id="trashcan" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
+    frequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
+});
 
-  // var t = setTimeout(startTime, 500);
+$("body").on("click", ".fa-trash", function () {
+  $(this).closest("tr").remove();
+  alert("delete button clicked");
+});
 
-  // If any errors are experienced, log them to console.
+function timeUpdater() {
+  $("#train-table > tbody").empty();
 
-  // on click for deleting row if trash is clicked
-  
-  //Update time of minutesAway and nextArrival 
+  database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+    var train = childSnapshot.val().formtrain;
+    var destination = childSnapshot.val().formdestination;
+    var frequency = childSnapshot.val().formfrequency;
+    var firstTime = childSnapshot.val().formfirsttime;
 
-  // Update minutes away by triggering change in firebase
+    var firstTimeConverted = moment(firstTime, "hh:mm").subtract(1, "years");
+    console.log(firstTimeConverted);
 
-  //empty tbody before appending new information
+    var currentTime = moment();
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm a"));
 
-  // Current Time
+    $("#timer").text(currentTime.format("hh:mm a"));
 
-  // Difference between the times
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
 
-  // Time apart (remainder)
+    var tRemainder = diffTime % frequency;
+    console.log("Remainder: " + tRemainder);
 
-  // determine minutes away
+    var minutesAway = frequency - tRemainder;
+    console.log("MINUTES TILL TRAIN: " + minutesAway);
 
-  // determine next train arrival
 
-  // want to push to table to add new train 
-  
-  // add new table row
-  
-  // add new train information into row
-  
-  // Add each train's data into the table row
+    var nextArrival = moment().add(minutesAway, "minutes").format("hh:mm a");
+    console.log("ARRIVAL TIME: " + moment(nextArrival).format("hh:mm a"));
 
+
+    $("#train-table > tbody").append("<tr><td>" + '<i class="fa fa-trash" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
+      frequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
+
+  })
+};
+
+setInterval(timeUpdater, 6000);
