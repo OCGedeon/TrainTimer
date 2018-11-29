@@ -68,7 +68,7 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey) {
   var nextArrival = moment().add(minutesAway, "minutes").format("hh:mm a");
   console.log("ARRIVAL TIME: " + moment(nextArrival).format("hh:mm a"));
 
-  $("#train-table > tbody").append("<tr><td>" + '<i class="fa fa-trash" id="trashcan" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
+  $("#train-table > tbody").append("<tr><td>" + '<i class="fa-trash" id="trashcan" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
     frequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
 }, function (errorObject) {
   console.log("The read failed: " + errorObject.code);
@@ -110,7 +110,7 @@ function timeUpdater() {
     console.log("ARRIVAL TIME: " + moment(nextArrival).format("hh:mm a"));
 
 
-    $("#train-table > tbody").append("<tr><td>" + '<i class="fa fa-trash" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
+    $("#train-table > tbody").append("<tr><td>" + '<i class="fa-trash" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
       frequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
 
   })
