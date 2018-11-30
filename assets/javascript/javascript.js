@@ -9,10 +9,18 @@ var config = {
 };
 firebase.initializeApp(config);
 
+
+
 var database = firebase.database();
 setInterval(function (startTime) {
   $("#timer").html(moment().format('hh:mm a'))
 }, 1000);
+
+
+
+
+
+
 
 $("#add-train").on("click", function () {
   event.preventDefault();
@@ -35,11 +43,19 @@ $("#add-train").on("click", function () {
   $("#frequency-input").val("");
   $("#firsttime-input").val("");
 
+  var trainInfo;
+  database.ref().push(trainInfo),
+    console.log(trainInfo);
 });
+
+
 var train;
 var frequency;
 var destination;
 var firstTime
+
+
+
 
 database.ref().on("child_added", function (childSnapshot, prevChildKey) {
   var train = childSnapshot.val().formtrain;
@@ -68,13 +84,13 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey) {
   var nextArrival = moment().add(minutesAway, "minutes").format("hh:mm a");
   console.log("ARRIVAL TIME: " + moment(nextArrival).format("hh:mm a"));
 
-  $("#train-table > tbody").append("<tr><td>" + '<i class="fa-trash" id="trashcan" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
+  $("#train-table > tbody").append("<tr><td>" + '<i class="fa fa-trash" id="trashcan" aria-hidden="true"></i>' + "</td><td>" + train + "</td><td>" + destination + "</td><td>" +
     frequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
 }, function (errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
 
-$("body").on("click", ".fa-trash", function () {
+$("body").on("click", ".fa fa-trash", function () {
   $(this).closest("tr").remove();
   alert("delete button clicked");
 });
